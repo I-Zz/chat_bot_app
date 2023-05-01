@@ -41,6 +41,8 @@ dependencies:
   http: ^0.13.5
   provider: ^6.0.5
   animated_text_kit: ^4.2.2
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
 
   get: ^4.6.5
   hexcolor: ^3.0.1
@@ -48,10 +50,12 @@ dependencies:
   speech_to_text: ^6.1.1
   google_ml_kit: ^0.14.0
   image_picker: ^0.8.7+4
+  flutter_tts: ^3.6.3
   path_provider: ^2.0.14
   image: ^4.0.16
-  image_downloader: ^0.31.0
-  
+  google_nav_bar: ^5.0.6
+  share_plus: ^6.3.2
+
 
 
 dev_dependencies:

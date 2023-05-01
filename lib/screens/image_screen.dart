@@ -30,6 +30,15 @@ class _ImageScreenState extends State<ImageScreen> {
   late TextEditingController textEditingController;
   late ScrollController _listScrollController;
   late FocusNode focusNode;
+  final ScrollController _controller = ScrollController();
+  void _scrollDown() {
+    _controller.animateTo(
+      _controller.position.maxScrollExtent,
+      duration: Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   @override
   void initState() {
     _listScrollController = ScrollController();
@@ -51,27 +60,38 @@ class _ImageScreenState extends State<ImageScreen> {
   }
 
   // List<ChatModel> chatList = [];
+
   @override
   Widget build(BuildContext context) {
-    // final modelsProvider = Provider.of<ModelsProvider>(context);
-    // final chatProvider = Provider.of<ChatProvider>(context);
     final imagesProvider = Provider.of<ImagesProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(),
+        ),
+        elevation: 5,
+        backgroundColor: scaffoldBackgroundColor,
+        shadowColor: Color(0xffcdf0fb),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset(AssetsManager.openaiLogo),
+          child: CircleAvatar(
+              backgroundImage: AssetImage('assets/images/sharingan.png')),
         ),
-        title: const Text("ChatGPT"),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () async {
-        //       await Services.showModalSheet(context: context);
-        //     },
-        //     icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
-        //   ),
-        // ],
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: const Text(
+            "CyberSphere",
+            style: TextStyle(color: Color(0xffcdf0fb)),
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Services.showModalSheet(context: context);
+            },
+            icon: const Icon(Icons.more_vert_rounded, color: Color(0xffcdf0fb)),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -79,7 +99,7 @@ class _ImageScreenState extends State<ImageScreen> {
             // Expanded(child: Container(color: Colors.grey)),
             Flexible(
               child: ListView.builder(
-                  controller: _listScrollController,
+                  controller: _controller,
                   itemCount:
                       imagesProvider.getChatList.length, //chatList.length,
                   itemBuilder: (context, index) {
@@ -102,56 +122,65 @@ class _ImageScreenState extends State<ImageScreen> {
             const SizedBox(
               height: 15,
             ),
-            Material(
-              color: cardColor,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        focusNode: focusNode,
-                        style: const TextStyle(color: Colors.white),
-                        controller: textEditingController,
-                        onSubmitted: (value) async {
-                          await sendPrompt(
-                            imagesProvider: imagesProvider,
-                          );
-                        },
-                        decoration: const InputDecoration.collapsed(
-                            hintText: "How can I help you",
-                            hintStyle: TextStyle(color: Colors.grey)),
-                      ),
-                    ),
-                    // ImageQuantity(dropdownValue, changeImageQuantity),
-                    IconButton(
-                      onPressed: () {
-                        // print(dropdownValue);
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ImageUploadScreen()));
-                      },
-                      icon: const Icon(
-                        Icons.file_upload_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        await sendPrompt(
-                          imagesProvider: imagesProvider,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Material(
+          elevation: 10,
+          shadowColor: Color(0xffcdf0fb),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              side: BorderSide(color: Color(0xffcdf0fb), width: 1)),
+          color: scaffoldBackgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    focusNode: focusNode,
+                    style: const TextStyle(color: Colors.white),
+                    controller: textEditingController,
+                    onSubmitted: (value) async {
+                      await sendPrompt(
+                        imagesProvider: imagesProvider,
+                      );
+                    },
+                    decoration: const InputDecoration.collapsed(
+                        hintText: "How can I help you",
+                        hintStyle: TextStyle(color: Colors.grey)),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.file_upload_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    await sendPrompt(
+                      imagesProvider: imagesProvider,
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.send,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _scrollDown,
+        child: Icon(Icons.arrow_downward),
+        backgroundColor: Color(0xffcdf0fb),
+        foregroundColor: Color(0xff161621),
       ),
     );
   }
